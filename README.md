@@ -1,0 +1,1 @@
+# MyAnimeList-Web-Scraper-Project
