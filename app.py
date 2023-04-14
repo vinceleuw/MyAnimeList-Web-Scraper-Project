@@ -19,7 +19,7 @@ def main():
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     chrome = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
-    chrome.get("https://myanimelist.net/animelist/redeyes943?status=4")
+    chrome.get("https://myanimelist.net/animelist/Jlin2?status=6")
 
     # Get scroll height
     last_height = chrome.execute_script("return document.body.scrollHeight")

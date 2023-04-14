@@ -4,11 +4,9 @@ from locators.anime_locators import AnimeLocators
 
 
 class AnimeParser:
-    def __init__(self, browser, link):
-        self.browser = browser[0]
+    def __init__(self, page_content, link):
         self.link = link
-        self.browser.get(self.link)
-        self.page_content = self.browser.page_source
+        self.page_content = page_content
         self.soup = BeautifulSoup(self.page_content, 'html.parser')
 
     def __repr__(self):
