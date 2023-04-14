@@ -1,12 +1,12 @@
+import asyncio
 import time
 
+import aiohttp
+from aiolimiter import AsyncLimiter
 from selenium.webdriver.common.by import By
 
 from locators.list_locators import ListLocator
 from parsers.anime_parser import AnimeParser
-import asyncio
-import aiohttp
-from aiolimiter import AsyncLimiter
 
 
 class ListPage:
@@ -14,7 +14,8 @@ class ListPage:
         self.browser = browser
         self.loop = asyncio.get_event_loop()
         self.rate_limit = AsyncLimiter(1, 3)
-        self.page_content = self.loop.run_until_complete(self.get_multiple_pages(self.loop, self.links))
+        self.page_content = self.loop.run_until_complete(
+            self.get_multiple_pages(self.loop, self.links))
 
     @property
     def anime_info(self):
@@ -26,11 +27,7 @@ class ListPage:
     @property
     def links(self):
         return [a.get_attribute('href') for a in self.browser.find_elements(By.CSS_SELECTOR, ListLocator.LIST_LOCATOR)]
-    
-    @property
-    def pages(self):
-        return self.pages
-    
+
     async def fetch_page(self, session, link):
         page_start = time.time()
         async with self.rate_limit:

@@ -10,6 +10,7 @@ from pages.list_page import ListPage
 
 
 SCROLL_PAUSE_TIME = 5
+LIST_LINK = ''
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     chrome = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
-    chrome.get("https://myanimelist.net/animelist/Jlin2?status=6")
+    chrome.get(LIST_LINK)
 
     # Get scroll height
     last_height = chrome.execute_script("return document.body.scrollHeight")
