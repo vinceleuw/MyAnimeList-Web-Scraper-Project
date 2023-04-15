@@ -4,6 +4,7 @@ import time
 import aiohttp
 from aiolimiter import AsyncLimiter
 from selenium.webdriver.common.by import By
+from cachetools import cached, TTLCache
 
 from locators.list_locators import ListLocator
 from parsers.anime_parser import AnimeParser
@@ -18,6 +19,7 @@ class ListPage:
             self.get_multiple_pages(self.loop, self.links))
 
     @property
+    @cached(cache=TTLCache(maxsize=2, ttl=3600))
     def anime_info(self):
         return [
             AnimeParser(page, link)

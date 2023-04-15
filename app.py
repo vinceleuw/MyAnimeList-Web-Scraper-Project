@@ -18,6 +18,7 @@ def main():
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('–-allow-running-insecure-content')
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    
     chrome = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
     chrome.get(LIST_LINK)
@@ -53,6 +54,8 @@ def main():
     df.to_csv('anime.csv')
 
     print(df.dtypes)
+
+    print(page.anime_info)
 
 
 if __name__ == '__main__':
