@@ -10,6 +10,15 @@ from pages.list_page import ListPage
 
 
 SCROLL_PAUSE_TIME = 5
+'''
+Link to User's anime list in format of https://myanimelist.net/animelist/USER_NAME?status=STATUS_NUMBER
+1 - Currently Watching
+2 - Completed
+3 - On Hold
+4 - Dropped
+6 - Plan to Watch
+7 - All Anime
+'''
 LIST_LINK = ''
 
 

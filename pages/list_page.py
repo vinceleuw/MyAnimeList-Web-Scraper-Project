@@ -11,9 +11,14 @@ from parsers.anime_parser import AnimeParser
 
 
 class ListPage:
+    """
+    Initializes a ListPage object that takes in a Chrome webdriver as parameter.
+    """
+
     def __init__(self, browser):
         self.browser = browser
         self.loop = asyncio.get_event_loop()
+        # Limits number of a requests to 1 every 3 seconds
         self.rate_limit = AsyncLimiter(1, 3)
         self.page_content = self.loop.run_until_complete(
             self.get_multiple_pages(self.loop, self.links))
@@ -21,6 +26,9 @@ class ListPage:
     @property
     @cached(cache=TTLCache(maxsize=2, ttl=3600))
     def anime_info(self):
+        """
+        Returns a List of parsed anime information. Caches result for up to an hour.
+        """
         return [
             AnimeParser(page, link)
             for page, link in zip(self.page_content, self.links)
@@ -28,6 +36,9 @@ class ListPage:
 
     @property
     def links(self):
+        """
+        Returns a list of links to the pages of all anime entries on the current page.
+        """
         return [a.get_attribute('href') for a in self.browser.find_elements(By.CSS_SELECTOR, ListLocator.LIST_LOCATOR)]
 
     async def fetch_page(self, session, link):
