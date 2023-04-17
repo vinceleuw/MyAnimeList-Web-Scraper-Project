@@ -24,7 +24,7 @@ class ListPage:
             self.get_multiple_pages(self.loop, self.links))
 
     @property
-    @cached(cache=TTLCache(maxsize=2, ttl=3600))
+    @cached(cache=TTLCache(maxsize=1, ttl=3600))
     def anime_info(self):
         """
         Returns a List of parsed anime information. Caches result for up to an hour.
