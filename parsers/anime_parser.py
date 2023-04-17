@@ -1,3 +1,6 @@
+import re
+import sqlite3
+
 from bs4 import BeautifulSoup
 
 from locators.anime_locators import AnimeLocators
@@ -13,8 +16,19 @@ class AnimeParser:
         self.page_content = page_content
         self.soup = BeautifulSoup(self.page_content, 'html.parser')
 
+        self.mal_id = re.search('anime\/([\w]+)', self.link).group(1)
+
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        cursor.execute('INSERT OR IGNORE INTO anime VALUES(?, ?)', (self.mal_id, self.name))
+        connection.commit()
+        cursor.execute('INSERT OR IGNORE INTO anime_info VALUES(?, ?, ?, ?, ?, ?, ?)', (self.mal_id, self.anime_type, self.episodes, self.studio, self.members, self.score, self.link))
+        connection.commit()
+        connection.close()
+
     def __repr__(self):
-        return f'<{self.name} / {self.anime_type} / {self.episodes} / {self.studio} / {self.members} / {self.score} / {self.link}>'
+        return f'<({self.mal_id} / {self.name} / {self.anime_type} / {self.episodes} / {self.studio} / {self.members} / {self.score} / {self.link}>'
 
     @property
     def name(self):

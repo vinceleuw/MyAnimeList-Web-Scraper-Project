@@ -1,5 +1,7 @@
 import time
 import pandas as pd
+import sqlite3
+import re
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -19,7 +21,7 @@ Link to User's anime list in format of https://myanimelist.net/animelist/USER_NA
 6 - Plan to Watch
 7 - All Anime
 '''
-LIST_LINK = ''
+LIST_LINK = 'https://myanimelist.net/animelist/Moonlit_Lilium?status=3'
 
 
 def main():
@@ -31,6 +33,8 @@ def main():
     chrome = webdriver.Chrome(service=Service(
         ChromeDriverManager().install()), options=options)
     chrome.get(LIST_LINK)
+
+    user = re.search('animelist\/([\w]+)', LIST_LINK).group(1)
 
     # Get scroll height
     last_height = chrome.execute_script("return document.body.scrollHeight")
@@ -52,12 +56,25 @@ def main():
     page = ListPage(chrome)
     anime = page.anime_info
 
+    connection = sqlite3.connect('data.db')
+    cursor = connection.cursor()
+
+    cursor.execute('INSERT OR IGNORE INTO users(user) VALUES(?)', (user,))
+    connection.commit()
+    cursor.execute('SELECT userid FROM users WHERE user = ?', (user,))
+    test = cursor.fetchone()[0]
+
+    for i in anime:
+        cursor.execute('INSERT OR IGNORE INTO on_list VALUES(?, ?)', (i.mal_id, test))
+        connection.commit()
+    connection.close()
+
     for i, x in enumerate(anime):
         anime[i] = repr(x).strip('<>').split(' / ')
 
     print(anime)
     df = pd.DataFrame(anime, columns=[
-                      'Name', 'Type', 'Episodes', 'Studio', 'Members', 'Score', 'Link'])
+                      'MALID', 'Name', 'Type', 'Episodes', 'Studio', 'Members', 'Score', 'Link'])
     print(df)
 
     df.to_csv('anime.csv')
